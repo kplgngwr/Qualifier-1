@@ -23,20 +23,31 @@ function App() {
 
   const handleSubmit = async () => {
     try {
-      console.log("Input JSON:", jsonInput);
-      const parsedInput = JSON.parse(jsonInput);
-      setError('');
+      // First clean up the input by replacing single quotes with double quotes
+      const cleanInput = jsonInput.replace(/'/g, '"');
+      console.log("Cleaned Input:", cleanInput);
+      
+      let parsedInput;
+      try {
+        parsedInput = JSON.parse(cleanInput);
+        // Ensure the input has the correct structure
+        if (!parsedInput.data) {
+          throw new Error('Input must have a "data" field');
+        }
+      } catch (err) {
+        setError('Invalid JSON input. Format should be: {"data":["M","1","334","4","B"]}');
+        return;
+      }
 
       // Call the backend API
       const res = await axios.post('http://localhost:5000/bfhl', parsedInput);
       console.log("Response:", res.data);
       setResponse(res.data);
-
-      // Reset filtered response
+      setError(''); // Clear any previous errors
       setFilteredResponse(null);
     } catch (err) {
-      console.error("Error parsing JSON:", err);
-      setError('Invalid JSON input');
+      console.error("Error:", err);
+      setError(err.message || 'Invalid JSON input');
     }
   };
 
@@ -97,7 +108,17 @@ function App() {
       {filteredResponse && (
         <animated.div style={fade}>
           <h2>Filtered Response</h2>
-          <pre>{JSON.stringify(filteredResponse, null, 2)}</pre>
+          <div className="filtered-results">
+            {filteredResponse.numbers && (
+              <p>Numbers: {filteredResponse.numbers.join(',')}</p>
+            )}
+            {filteredResponse.highestAlphabet && (
+              <p>Highest Alphabet: {filteredResponse.highestAlphabet[0]}</p>
+            )}
+            {filteredResponse.alphabets && (
+              <p>Alphabets: {filteredResponse.alphabets.join(',')}</p>
+            )}
+          </div>
         </animated.div>
       )}
     </div>
