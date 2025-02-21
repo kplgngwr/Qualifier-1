@@ -74,14 +74,14 @@ function App() {
   };
 
   useEffect(() => {
-    document.title = 'Enter Data';
+    document.title = 'Qualifier-1';
   }, []);
 
   const fade = useSpring({ opacity: response ? 1 : 0 });
 
   return (
     <div className="App">
-      <h1>Your Roll Number</h1>
+      <h1>Enter Data</h1>
       <input
         type="text"
         value={jsonInput}
