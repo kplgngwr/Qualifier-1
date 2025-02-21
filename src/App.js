@@ -17,20 +17,20 @@ function App() {
     { value: 'Highest alphabet', label: 'Highest Alphabet' },
   ];
 
+  const API_URL = process.env.REACT_APP_API_URL || 'https://your-vercel-backend-url.vercel.app/api';
+
   const handleInputChange = (e) => {
     setJsonInput(e.target.value);
   };
 
   const handleSubmit = async () => {
     try {
-      // First clean up the input by replacing single quotes with double quotes
       const cleanInput = jsonInput.replace(/'/g, '"');
       console.log("Cleaned Input:", cleanInput);
       
       let parsedInput;
       try {
         parsedInput = JSON.parse(cleanInput);
-        // Ensure the input has the correct structure
         if (!parsedInput.data) {
           throw new Error('Input must have a "data" field');
         }
@@ -39,11 +39,10 @@ function App() {
         return;
       }
 
-      // Call the backend API
-      const res = await axios.post('http://localhost:5000/bfhl', parsedInput);
+      const res = await axios.post(`${API_URL}/bfhl`, parsedInput);
       console.log("Response:", res.data);
       setResponse(res.data);
-      setError(''); // Clear any previous errors
+      setError('');
       setFilteredResponse(null);
     } catch (err) {
       console.error("Error:", err);
