@@ -74,7 +74,7 @@ function App() {
   };
 
   useEffect(() => {
-    document.title = 'Your Roll Number';
+    document.title = 'Enter Data';
   }, []);
 
   const fade = useSpring({ opacity: response ? 1 : 0 });
